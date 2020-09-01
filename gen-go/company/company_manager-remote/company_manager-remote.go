@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"github.com/apache/thrift/lib/go/thrift"
-	"company-manager/gen-go/company"
+	"company"
 )
 
 var _ = company.GoUnusedProtection__
@@ -24,8 +24,12 @@ func Usage() {
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  string getEmployee(string id)")
+  fmt.Fprintln(os.Stderr, "  void putEmployee(string id, string name, string address, int age, string company)")
+  fmt.Fprintln(os.Stderr, "  void removeEmployee(string id)")
   fmt.Fprintln(os.Stderr, "  string getCompany(string id)")
+  fmt.Fprintln(os.Stderr, "  void putCompany(string id, string name, string address,  emplist)")
   fmt.Fprintln(os.Stderr, "   getEmployeeList(string id)")
+  fmt.Fprintln(os.Stderr, "  void removeCompany(string id)")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
 }
@@ -157,6 +161,39 @@ func main() {
     fmt.Print(client.GetEmployee(context.Background(), value0))
     fmt.Print("\n")
     break
+  case "putEmployee":
+    if flag.NArg() - 1 != 5 {
+      fmt.Fprintln(os.Stderr, "PutEmployee requires 5 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    argvalue1 := flag.Arg(2)
+    value1 := argvalue1
+    argvalue2 := flag.Arg(3)
+    value2 := argvalue2
+    tmp3, err23 := (strconv.Atoi(flag.Arg(4)))
+    if err23 != nil {
+      Usage()
+      return
+    }
+    argvalue3 := int32(tmp3)
+    value3 := company.Int(argvalue3)
+    argvalue4 := flag.Arg(5)
+    value4 := argvalue4
+    fmt.Print(client.PutEmployee(context.Background(), value0, value1, value2, value3, value4))
+    fmt.Print("\n")
+    break
+  case "removeEmployee":
+    if flag.NArg() - 1 != 1 {
+      fmt.Fprintln(os.Stderr, "RemoveEmployee requires 1 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    fmt.Print(client.RemoveEmployee(context.Background(), value0))
+    fmt.Print("\n")
+    break
   case "getCompany":
     if flag.NArg() - 1 != 1 {
       fmt.Fprintln(os.Stderr, "GetCompany requires 1 args")
@@ -167,6 +204,38 @@ func main() {
     fmt.Print(client.GetCompany(context.Background(), value0))
     fmt.Print("\n")
     break
+  case "putCompany":
+    if flag.NArg() - 1 != 4 {
+      fmt.Fprintln(os.Stderr, "PutCompany requires 4 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    argvalue1 := flag.Arg(2)
+    value1 := argvalue1
+    argvalue2 := flag.Arg(3)
+    value2 := argvalue2
+    arg30 := flag.Arg(4)
+    mbTrans31 := thrift.NewTMemoryBufferLen(len(arg30))
+    defer mbTrans31.Close()
+    _, err32 := mbTrans31.WriteString(arg30)
+    if err32 != nil { 
+      Usage()
+      return
+    }
+    factory33 := thrift.NewTJSONProtocolFactory()
+    jsProt34 := factory33.GetProtocol(mbTrans31)
+    containerStruct3 := company.NewCompanyManagerPutCompanyArgs()
+    err35 := containerStruct3.ReadField4(jsProt34)
+    if err35 != nil {
+      Usage()
+      return
+    }
+    argvalue3 := containerStruct3.Emplist
+    value3 := argvalue3
+    fmt.Print(client.PutCompany(context.Background(), value0, value1, value2, value3))
+    fmt.Print("\n")
+    break
   case "getEmployeeList":
     if flag.NArg() - 1 != 1 {
       fmt.Fprintln(os.Stderr, "GetEmployeeList requires 1 args")
@@ -175,6 +244,16 @@ func main() {
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
     fmt.Print(client.GetEmployeeList(context.Background(), value0))
+    fmt.Print("\n")
+    break
+  case "removeCompany":
+    if flag.NArg() - 1 != 1 {
+      fmt.Fprintln(os.Stderr, "RemoveCompany requires 1 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    fmt.Print(client.RemoveCompany(context.Background(), value0))
     fmt.Print("\n")
     break
   case "":
