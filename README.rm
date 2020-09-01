@@ -1,0 +1,7 @@
+This repository contain the code of a basic Employee Management application
+
+for api, run: bee run -downdoc=true -gendoc=true 
+for thrift, locate folder gen-go, run: go run server.go| go run client.go 
+
+be sure that you've already run bigset and etcd 
+

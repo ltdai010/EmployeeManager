@@ -1,0 +1,247 @@
+swagger: "2.0"
+info:
+  title: beego Test API
+  description: beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: astaxie@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /company/:
+    get:
+      tags:
+      - company
+      description: get all objects
+      operationId: CompanyController.GetAll
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Company'
+        "403":
+          description: :objectId is empty
+    post:
+      tags:
+      - company
+      description: create object
+      operationId: CompanyController.Create
+      parameters:
+      - in: body
+        name: body
+        description: The object content
+        required: true
+        schema:
+          $ref: '#/definitions/company.Company'
+      responses:
+        "200":
+          description: '{string} company.Company.ID'
+        "403":
+          description: body is empty
+  /company/delete:
+    delete:
+      tags:
+      - company
+      description: delete the object
+      operationId: CompanyController.Delete
+      parameters:
+      - in: query
+        name: companyIO
+        description: The objectId you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: companyID is empty
+  /company/getCompany:
+    get:
+      tags:
+      - company
+      description: find object by companyID
+      operationId: CompanyController.Get
+      parameters:
+      - in: query
+        name: companyID
+        description: the companyID you want to get
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Company'
+        "403":
+          description: :objectId is empty
+  /company/update:
+    put:
+      tags:
+      - company
+      description: update the object
+      operationId: CompanyController.Update
+      parameters:
+      - in: query
+        name: companyID
+        description: The companyID you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: The body
+        required: true
+        schema:
+          $ref: '#/definitions/company.Company'
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Company'
+        "403":
+          description: :companyID is empty
+  /employee/:
+    get:
+      tags:
+      - employee
+      description: get all Users
+      operationId: EmployeeController.GetAll
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Employee'
+    post:
+      tags:
+      - employee
+      description: create users
+      operationId: EmployeeController.CreateUser
+      parameters:
+      - in: body
+        name: body
+        description: body for user content
+        required: true
+        schema:
+          $ref: '#/definitions/company.Employee'
+      responses:
+        "200":
+          description: '{int} company.Employee.Id'
+        "403":
+          description: body is empty
+  /employee/{uid}:
+    get:
+      tags:
+      - employee
+      description: get user by uid
+      operationId: EmployeeController.Get
+      parameters:
+      - in: path
+        name: uid
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Employee'
+        "403":
+          description: :uid is empty
+    delete:
+      tags:
+      - employee
+      description: delete the user
+      operationId: EmployeeController.Delete
+      parameters:
+      - in: path
+        name: uid
+        description: The uid you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: uid is empty
+  /employee/update:
+    put:
+      tags:
+      - employee
+      description: update the user
+      operationId: EmployeeController.Update
+      parameters:
+      - in: query
+        name: uid
+        description: The uid you want to update
+        required: true
+        type: string
+      - in: query
+        name: name
+        description: name
+        required: true
+        type: string
+      - in: query
+        name: address
+        description: address
+        required: true
+        type: string
+      - in: query
+        name: age
+        description: age
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: companyID
+        description: companyID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/company.Employee'
+        "403":
+          description: :something is empty
+definitions:
+  company.Company:
+    title: Company
+    type: object
+    properties:
+      address:
+        type: string
+      employeeList:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      name:
+        type: string
+  company.Employee:
+    title: Employee
+    type: object
+    properties:
+      address:
+        type: string
+      age:
+        $ref: '#/definitions/company.Int'
+      company:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+  company.Int:
+    title: Int
+    format: int32
+    type: integer
+tags:
+- name: company
+  description: |
+    Operations about object
+- name: employee
+  description: |
+    Operations about Employee
