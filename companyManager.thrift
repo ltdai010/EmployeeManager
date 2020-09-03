@@ -14,15 +14,16 @@ struct Company{
     1: string id
     2: string name
     3: string address
-    4: list<string> employeeList 
 }
 
+
 service companyManager{
-    string getEmployee(1:string id)
+    string getEmployee(1:string id, 2:string companyID)
     void putEmployee(1:string id, 2:string name, 3:string address, 4: int age, 5: string company)
-    void removeEmployee(1:string id)
+    void removeEmployee(1:string id, 2:string companyID)
     string getCompany(1:string id)
-    void putCompany(1:string id, 2:string name, 3:string address, 4: list<string> emplist)
+    void putCompany(1:string id, 2:string name, 3:string address)
+    list<string> getAllCompany()
     list<string> getEmployeeList(1:string id)
     void removeCompany(1:string id)
 }

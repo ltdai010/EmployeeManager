@@ -15,7 +15,7 @@ type CompanyController struct {
 
 // @Title Create
 // @Description create object
-// @Param	body		body 	company.Company	true		"The object content"
+// @Param	body	body	company.Company	true	"The object content"
 // @Success 200 {string} company.Company.ID
 // @Failure 403 body is empty
 // @router / [post]
@@ -34,7 +34,7 @@ func (o *CompanyController) Post() {
 // @Failure 403 :objectId is empty
 // @router /getCompany [get]
 func (o *CompanyController) Get() {
-	companyID := o.Ctx.Input.Param("companyID")
+	companyID := o.GetString("companyID")
 	if companyID != "" {
 		ob, err := models.GetOne(companyID)
 		if err != nil {
@@ -59,17 +59,15 @@ func (o *CompanyController) GetAll() {
 
 // @Title Update
 // @Description update the object
-// @Param	companyID		query 	string	true		"The companyID you want to update"
 // @Param	body		body 	company.Company	true		"The body"
 // @Success 200 {object} company.Company
 // @Failure 403 :companyID is empty
 // @router /update [put]
 func (o *CompanyController) Put() {
-	objectId := o.Ctx.Input.Param("companyID")
 	var ob company.Company
-	_ = json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 
-	err := models.Update(objectId, ob.Name, ob.Address, ob.EmployeeList)
+	err := models.Update(ob.ID, ob.Name, ob.Address)
 	if err != nil {
 		o.Data["json"] = err.Error()
 	} else {
@@ -83,11 +81,15 @@ func (o *CompanyController) Put() {
 // @Param	companyIO		query 	string	true		"The objectId you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 companyID is empty
-// @router /delete [delete]
+// @router /deleteCompany [delete]
 func (o *CompanyController) Delete() {
-	objectId := o.Ctx.Input.Param("companyID")
-	models.Delete(objectId)
-	o.Data["json"] = "delete success!"
+	objectId := o.GetString("companyIO")
+	err := models.Delete(objectId)
+	if err != nil {
+		o.Data["json"] = err
+	} else {
+		o.Data["json"] = "delete success!"
+	}
 	o.ServeJSON()
 }
 

@@ -19,8 +19,9 @@ type HandleCompany struct {
 
 }
 
-func (this *HandleCompany) GetEmployee(ctx context.Context, id string) (r string, err error) {
-	e, err := client.BsGetItem2(models.EmployeeKey, []byte(id))
+//get an employee
+func (this *HandleCompany) GetEmployee(ctx context.Context, id string, companyID string) (r string, err error) {
+	e, err := client.BsGetItem2(generic.TStringKey(companyID), []byte(id))
 	if err != nil {
 		return "", err
 	}
@@ -33,20 +34,23 @@ func (this *HandleCompany) GetEmployee(ctx context.Context, id string) (r string
 	return s.String(), nil
 }
 
+//put an employee
 func (this *HandleCompany) PutEmployee(ctx context.Context, id string, name string, address string,
 	age company.Int, companyID string) (err error)  {
 	s, err := json.Marshal(company.Employee{ID: id, Name: name,
 		Address: address, Age: age, Company: companyID})
 	item := generic.TItem{Key: []byte(id), Value: s}
-	_, err = client.BsPutItem2(models.EmployeeKey, &item)
+	_, err = client.BsPutItem2(generic.TStringKey(companyID), &item)
 	return err
 }
 
-func (this *HandleCompany) RemoveEmployee(ctx context.Context, id string) (err error) {
-	_, err = client.BsRemoveItem2(models.EmployeeKey, generic.TItemKey(id))
+//remove employee
+func (this *HandleCompany) RemoveEmployee(ctx context.Context, id string, companyID string) (err error) {
+	_, err = client.BsRemoveItem2(generic.TStringKey(companyID), generic.TItemKey(id))
 	return err
 }
 
+//get a company
 func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string, error) {
 	c, err := client.BsGetItem2(models.CompanyKey, []byte(id))
 	if err != nil {
@@ -57,41 +61,51 @@ func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string, 
 	return s.String(), nil
 }
 
-func (this *HandleCompany) PutCompany(ctx context.Context, id string, name string, address string,
-	emplist []string) (err error) {
-	c := company.Company{ID: id, Address: address, Name: name, EmployeeList: emplist}
+//put a company
+func (this *HandleCompany) PutCompany(ctx context.Context, id string, name string, address string) (err error) {
+	log.Println(id)
+	c := company.Company{ID: id, Address: address, Name: name}
 	s, err := json.Marshal(c)
 	item := generic.TItem{Key: []byte(id), Value: s}
 	_, err = client.BsPutItem2(models.CompanyKey, &item)
 	return err
 }
 
+//remove a company
 func (this *HandleCompany) RemoveCompany(ctx context.Context, id string) (err error) {
 	_, err = client.BsRemoveItem2(models.CompanyKey, generic.TItemKey(id))
 	return err
 }
 
-func (this *HandleCompany) GetEmployeeList(ctx context.Context, id string) ([]string, error) {
-	c, err := client.BsGetItem2(models.CompanyKey, []byte(id))
-	if err != nil {
-		return nil, err
-	}
-	var s company.Company
-	_ = json.Unmarshal(c.GetValue(), &s)
-	var list []string
-	for _, i := range s.GetEmployeeList(){
-		v, _ := client.BsGetItem2(models.EmployeeKey, []byte(i))
+
+//get a company employeelist
+func (this *HandleCompany) GetEmployeeList(ctx context.Context, id string) (list []string, err error) {
+	count, err := client.GetTotalCount2(generic.TStringKey(id))
+	arr, err := client.BsGetSlice2(generic.TStringKey(id), 0, int32(count))
+	for _, i := range arr{
 		var e company.Employee
-		_ = json.Unmarshal(v.GetValue(), &e)
-		list = append(list, e.Name)
+		json.Unmarshal(i.GetValue(), &e)
+		list = append(list, e.String())
 	}
-	return list, nil
+	return list, err
+}
+
+//get all company
+func (this *HandleCompany) GetAllCompany(ctx context.Context) (list []string, err error){
+	count, err := client.GetTotalCount2(models.CompanyKey)
+	listItem, err := client.BsGetSlice2(models.CompanyKey, 0, int32(count))
+	for _, i := range listItem {
+		var c company.Company
+		json.Unmarshal(i.GetValue(), &c)
+		list = append(list, c.String())
+	}
+	return list, err
 }
 
 
 func main() {
 	client = StringBigsetService.NewStringBigsetServiceModel("my-service-id",
-		[]string{"0.0.0.0:2360"},
+		[]string{"0.0.0.0:2379"},
 		GoEndpointBackendManager.EndPoint{
 			Host:      "127.0.0.1",
 			Port:      "18407",

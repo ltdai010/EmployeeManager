@@ -41,7 +41,7 @@ paths:
           description: '{string} company.Company.ID'
         "403":
           description: body is empty
-  /company/delete:
+  /company/deleteCompany:
     delete:
       tags:
       - company
@@ -84,11 +84,6 @@ paths:
       description: update the object
       operationId: CompanyController.Update
       parameters:
-      - in: query
-        name: companyID
-        description: The companyID you want to update
-        required: true
-        type: string
       - in: body
         name: body
         description: The body
@@ -108,6 +103,12 @@ paths:
       - employee
       description: get all Users
       operationId: EmployeeController.GetAll
+      parameters:
+      - in: query
+        name: companyID
+        description: company id
+        required: true
+        type: string
       responses:
         "200":
           description: ""
@@ -142,6 +143,11 @@ paths:
         description: The key for staticblock
         required: true
         type: string
+      - in: query
+        name: companyID
+        description: The company ID
+        required: true
+        type: string
       responses:
         "200":
           description: ""
@@ -158,6 +164,11 @@ paths:
       - in: path
         name: uid
         description: The uid you want to delete
+        required: true
+        type: string
+      - in: query
+        name: companyID
+        description: The company id
         required: true
         type: string
       responses:
@@ -212,10 +223,6 @@ definitions:
     properties:
       address:
         type: string
-      employeeList:
-        type: array
-        items:
-          type: string
       id:
         type: string
       name:

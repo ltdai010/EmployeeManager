@@ -28,7 +28,7 @@ func init() {
     beego.GlobalControllerRouter["company-manager/controllers:CompanyController"] = append(beego.GlobalControllerRouter["company-manager/controllers:CompanyController"],
         beego.ControllerComments{
             Method: "Delete",
-            Router: `/delete`,
+            Router: `/deleteCompany`,
             AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,

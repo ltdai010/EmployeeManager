@@ -61,7 +61,7 @@
                 }
             }
         },
-        "/company/delete": {
+        "/company/deleteCompany": {
             "delete": {
                 "tags": [
                     "company"
@@ -125,13 +125,6 @@
                 "operationId": "CompanyController.Update",
                 "parameters": [
                     {
-                        "in": "query",
-                        "name": "companyID",
-                        "description": "The companyID you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
                         "in": "body",
                         "name": "body",
                         "description": "The body",
@@ -161,6 +154,15 @@
                 ],
                 "description": "get all Users",
                 "operationId": "EmployeeController.GetAll",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "company id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -269,6 +271,13 @@
                         "description": "The key for staticblock",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "The company ID",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -296,6 +305,13 @@
                         "description": "The uid you want to delete",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "The company id",
+                        "required": true,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -316,12 +332,6 @@
             "properties": {
                 "address": {
                     "type": "string"
-                },
-                "employeeList": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 },
                 "id": {
                     "type": "string"

@@ -29,10 +29,12 @@ func (u *EmployeeController) Post() {
 
 // @Title GetAll
 // @Description get all Users
+// @Param companyID query string true "company id"
 // @Success 200 {object} company.Employee
 // @router / [get]
 func (u *EmployeeController) GetAll() {
-	users := models.GetAllUsers()
+	companyID := u.GetString("companyID")
+	users := models.GetAllUsers(companyID)
 	u.Data["json"] = users
 	u.ServeJSON()
 }
@@ -40,13 +42,15 @@ func (u *EmployeeController) GetAll() {
 // @Title Get
 // @Description get user by uid
 // @Param	uid		path 	string	true		"The key for staticblock"
+// @Param   companyID query string true         "The company ID"
 // @Success 200 {object} company.Employee
 // @Failure 403 :uid is empty
 // @router /:uid [get]
 func (u *EmployeeController) Get() {
 	uid := u.GetString(":uid")
+	companyID := u.GetString("companyID")
 	if uid != "" {
-		user, err := models.GetUser(uid)
+		user, err := models.GetUser(uid, companyID)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
@@ -86,12 +90,14 @@ func (u *EmployeeController) Put() {
 // @Title Delete
 // @Description delete the user
 // @Param	uid		path 	string	true		"The uid you want to delete"
+// @Param   companyID query string true         "The company id"
 // @Success 200 {string} delete success!
 // @Failure 403 uid is empty
 // @router /:uid [delete]
 func (u *EmployeeController) Delete() {
 	uid := u.GetString(":uid")
-	models.DeleteUser(uid)
+	companyID := u.GetString("companyID")
+	models.DeleteUser(uid, companyID)
 	u.Data["json"] = "delete success!"
 	u.ServeJSON()
 }
