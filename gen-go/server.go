@@ -68,7 +68,7 @@ func (this *HandleCompany) RemoveEmployee(ctx context.Context, id string, compan
 }
 
 //get a company
-func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string string, err error) {
+func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string string, err  error) {
 	c, err := client.BsGetItem2(models.CompanyKey, []byte(id))
 	if c == nil {
 		return "failed", err
