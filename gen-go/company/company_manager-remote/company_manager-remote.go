@@ -24,11 +24,13 @@ func Usage() {
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
   fmt.Fprintln(os.Stderr, "  string getEmployee(string id, string companyID)")
+  fmt.Fprintln(os.Stderr, "  void postEmployee(string id, string name, string address, int age, string company)")
   fmt.Fprintln(os.Stderr, "  void putEmployee(string id, string name, string address, int age, string company)")
   fmt.Fprintln(os.Stderr, "  void removeEmployee(string id, string companyID)")
   fmt.Fprintln(os.Stderr, "  string getCompany(string id)")
-  fmt.Fprintln(os.Stderr, "  void putCompany(string id, string name, string address)")
   fmt.Fprintln(os.Stderr, "   getAllCompany()")
+  fmt.Fprintln(os.Stderr, "  void postCompany(string id, string name, string address)")
+  fmt.Fprintln(os.Stderr, "  void putCompany(string id, string name, string address)")
   fmt.Fprintln(os.Stderr, "   getEmployeeList(string id)")
   fmt.Fprintln(os.Stderr, "  void removeCompany(string id)")
   fmt.Fprintln(os.Stderr)
@@ -164,6 +166,29 @@ func main() {
     fmt.Print(client.GetEmployee(context.Background(), value0, value1))
     fmt.Print("\n")
     break
+  case "postEmployee":
+    if flag.NArg() - 1 != 5 {
+      fmt.Fprintln(os.Stderr, "PostEmployee requires 5 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    argvalue1 := flag.Arg(2)
+    value1 := argvalue1
+    argvalue2 := flag.Arg(3)
+    value2 := argvalue2
+    tmp3, err29 := (strconv.Atoi(flag.Arg(4)))
+    if err29 != nil {
+      Usage()
+      return
+    }
+    argvalue3 := int32(tmp3)
+    value3 := company.Int(argvalue3)
+    argvalue4 := flag.Arg(5)
+    value4 := argvalue4
+    fmt.Print(client.PostEmployee(context.Background(), value0, value1, value2, value3, value4))
+    fmt.Print("\n")
+    break
   case "putEmployee":
     if flag.NArg() - 1 != 5 {
       fmt.Fprintln(os.Stderr, "PutEmployee requires 5 args")
@@ -175,8 +200,8 @@ func main() {
     value1 := argvalue1
     argvalue2 := flag.Arg(3)
     value2 := argvalue2
-    tmp3, err25 := (strconv.Atoi(flag.Arg(4)))
-    if err25 != nil {
+    tmp3, err34 := (strconv.Atoi(flag.Arg(4)))
+    if err34 != nil {
       Usage()
       return
     }
@@ -209,6 +234,28 @@ func main() {
     fmt.Print(client.GetCompany(context.Background(), value0))
     fmt.Print("\n")
     break
+  case "getAllCompany":
+    if flag.NArg() - 1 != 0 {
+      fmt.Fprintln(os.Stderr, "GetAllCompany requires 0 args")
+      flag.Usage()
+    }
+    fmt.Print(client.GetAllCompany(context.Background()))
+    fmt.Print("\n")
+    break
+  case "postCompany":
+    if flag.NArg() - 1 != 3 {
+      fmt.Fprintln(os.Stderr, "PostCompany requires 3 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    argvalue1 := flag.Arg(2)
+    value1 := argvalue1
+    argvalue2 := flag.Arg(3)
+    value2 := argvalue2
+    fmt.Print(client.PostCompany(context.Background(), value0, value1, value2))
+    fmt.Print("\n")
+    break
   case "putCompany":
     if flag.NArg() - 1 != 3 {
       fmt.Fprintln(os.Stderr, "PutCompany requires 3 args")
@@ -221,14 +268,6 @@ func main() {
     argvalue2 := flag.Arg(3)
     value2 := argvalue2
     fmt.Print(client.PutCompany(context.Background(), value0, value1, value2))
-    fmt.Print("\n")
-    break
-  case "getAllCompany":
-    if flag.NArg() - 1 != 0 {
-      fmt.Fprintln(os.Stderr, "GetAllCompany requires 0 args")
-      flag.Usage()
-    }
-    fmt.Print(client.GetAllCompany(context.Background()))
     fmt.Print("\n")
     break
   case "getEmployeeList":

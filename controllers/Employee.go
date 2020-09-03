@@ -63,25 +63,22 @@ func (u *EmployeeController) Get() {
 // @Title Update
 // @Description update the user
 // @Param	uid		query 	string	true		"The uid you want to update"
-// @Param	name	query 	string	true		"name"
-// @Param 	address query	string  true         "address"
-// @Param   age     query   int     true         "age"
-// @Param   companyID query   string  true         "companyID"
+// @Param	cid		query	string	true		"The cid"
+// @Param	body	body	company.Employee		"The company information"
 // @Success 200 {object} company.Employee
 // @Failure 403 :something is empty
 // @router /update [put]
 func (u *EmployeeController) Put() {
+	var e company.Employee
 	uid := u.GetString("uid")
-	name := u.GetString("name")
-	address := u.GetString("address")
-	age, _ := u.GetInt("age")
-	companyID := u.GetString("companyID")
+	cid := u.GetString("cid")
+	err := json.Unmarshal(u.Ctx.Input.RequestBody, &e)
 	if uid != "" {
-		err := models.UpdateUser(uid, name, address, age, companyID)
+		err = models.UpdateUser(uid, e.Name, e.Address, int(e.Age), cid)
 		if err != nil {
 			u.Data["json"] = err.Error()
 		} else {
-			u.Data["json"] = "success"
+			u.Data["json"] = "done"
 		}
 	}
 	u.ServeJSON()

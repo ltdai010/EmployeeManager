@@ -432,6 +432,13 @@ type CompanyManager interface {
   //  - Address
   //  - Age
   //  - Company
+  PostEmployee(ctx context.Context, id string, name string, address string, age Int, company string) (err error)
+  // Parameters:
+  //  - ID
+  //  - Name
+  //  - Address
+  //  - Age
+  //  - Company
   PutEmployee(ctx context.Context, id string, name string, address string, age Int, company string) (err error)
   // Parameters:
   //  - ID
@@ -440,12 +447,17 @@ type CompanyManager interface {
   // Parameters:
   //  - ID
   GetCompany(ctx context.Context, id string) (r string, err error)
+  GetAllCompany(ctx context.Context) (r []string, err error)
+  // Parameters:
+  //  - ID
+  //  - Name
+  //  - Address
+  PostCompany(ctx context.Context, id string, name string, address string) (err error)
   // Parameters:
   //  - ID
   //  - Name
   //  - Address
   PutCompany(ctx context.Context, id string, name string, address string) (err error)
-  GetAllCompany(ctx context.Context) (r []string, err error)
   // Parameters:
   //  - ID
   GetEmployeeList(ctx context.Context, id string) (r []string, err error)
@@ -499,15 +511,35 @@ func (p *CompanyManagerClient) GetEmployee(ctx context.Context, id string, compa
 //  - Address
 //  - Age
 //  - Company
-func (p *CompanyManagerClient) PutEmployee(ctx context.Context, id string, name string, address string, age Int, company string) (err error) {
-  var _args2 CompanyManagerPutEmployeeArgs
+func (p *CompanyManagerClient) PostEmployee(ctx context.Context, id string, name string, address string, age Int, company string) (err error) {
+  var _args2 CompanyManagerPostEmployeeArgs
   _args2.ID = id
   _args2.Name = name
   _args2.Address = address
   _args2.Age = age
   _args2.Company = company
-  var _result3 CompanyManagerPutEmployeeResult
-  if err = p.Client_().Call(ctx, "putEmployee", &_args2, &_result3); err != nil {
+  var _result3 CompanyManagerPostEmployeeResult
+  if err = p.Client_().Call(ctx, "postEmployee", &_args2, &_result3); err != nil {
+    return
+  }
+  return nil
+}
+
+// Parameters:
+//  - ID
+//  - Name
+//  - Address
+//  - Age
+//  - Company
+func (p *CompanyManagerClient) PutEmployee(ctx context.Context, id string, name string, address string, age Int, company string) (err error) {
+  var _args4 CompanyManagerPutEmployeeArgs
+  _args4.ID = id
+  _args4.Name = name
+  _args4.Address = address
+  _args4.Age = age
+  _args4.Company = company
+  var _result5 CompanyManagerPutEmployeeResult
+  if err = p.Client_().Call(ctx, "putEmployee", &_args4, &_result5); err != nil {
     return
   }
   return nil
@@ -517,11 +549,11 @@ func (p *CompanyManagerClient) PutEmployee(ctx context.Context, id string, name 
 //  - ID
 //  - CompanyID
 func (p *CompanyManagerClient) RemoveEmployee(ctx context.Context, id string, companyID string) (err error) {
-  var _args4 CompanyManagerRemoveEmployeeArgs
-  _args4.ID = id
-  _args4.CompanyID = companyID
-  var _result5 CompanyManagerRemoveEmployeeResult
-  if err = p.Client_().Call(ctx, "removeEmployee", &_args4, &_result5); err != nil {
+  var _args6 CompanyManagerRemoveEmployeeArgs
+  _args6.ID = id
+  _args6.CompanyID = companyID
+  var _result7 CompanyManagerRemoveEmployeeResult
+  if err = p.Client_().Call(ctx, "removeEmployee", &_args6, &_result7); err != nil {
     return
   }
   return nil
@@ -530,29 +562,13 @@ func (p *CompanyManagerClient) RemoveEmployee(ctx context.Context, id string, co
 // Parameters:
 //  - ID
 func (p *CompanyManagerClient) GetCompany(ctx context.Context, id string) (r string, err error) {
-  var _args6 CompanyManagerGetCompanyArgs
-  _args6.ID = id
-  var _result7 CompanyManagerGetCompanyResult
-  if err = p.Client_().Call(ctx, "getCompany", &_args6, &_result7); err != nil {
-    return
-  }
-  return _result7.GetSuccess(), nil
-}
-
-// Parameters:
-//  - ID
-//  - Name
-//  - Address
-func (p *CompanyManagerClient) PutCompany(ctx context.Context, id string, name string, address string) (err error) {
-  var _args8 CompanyManagerPutCompanyArgs
+  var _args8 CompanyManagerGetCompanyArgs
   _args8.ID = id
-  _args8.Name = name
-  _args8.Address = address
-  var _result9 CompanyManagerPutCompanyResult
-  if err = p.Client_().Call(ctx, "putCompany", &_args8, &_result9); err != nil {
+  var _result9 CompanyManagerGetCompanyResult
+  if err = p.Client_().Call(ctx, "getCompany", &_args8, &_result9); err != nil {
     return
   }
-  return nil
+  return _result9.GetSuccess(), nil
 }
 
 func (p *CompanyManagerClient) GetAllCompany(ctx context.Context) (r []string, err error) {
@@ -566,23 +582,55 @@ func (p *CompanyManagerClient) GetAllCompany(ctx context.Context) (r []string, e
 
 // Parameters:
 //  - ID
-func (p *CompanyManagerClient) GetEmployeeList(ctx context.Context, id string) (r []string, err error) {
-  var _args12 CompanyManagerGetEmployeeListArgs
+//  - Name
+//  - Address
+func (p *CompanyManagerClient) PostCompany(ctx context.Context, id string, name string, address string) (err error) {
+  var _args12 CompanyManagerPostCompanyArgs
   _args12.ID = id
-  var _result13 CompanyManagerGetEmployeeListResult
-  if err = p.Client_().Call(ctx, "getEmployeeList", &_args12, &_result13); err != nil {
+  _args12.Name = name
+  _args12.Address = address
+  var _result13 CompanyManagerPostCompanyResult
+  if err = p.Client_().Call(ctx, "postCompany", &_args12, &_result13); err != nil {
     return
   }
-  return _result13.GetSuccess(), nil
+  return nil
+}
+
+// Parameters:
+//  - ID
+//  - Name
+//  - Address
+func (p *CompanyManagerClient) PutCompany(ctx context.Context, id string, name string, address string) (err error) {
+  var _args14 CompanyManagerPutCompanyArgs
+  _args14.ID = id
+  _args14.Name = name
+  _args14.Address = address
+  var _result15 CompanyManagerPutCompanyResult
+  if err = p.Client_().Call(ctx, "putCompany", &_args14, &_result15); err != nil {
+    return
+  }
+  return nil
+}
+
+// Parameters:
+//  - ID
+func (p *CompanyManagerClient) GetEmployeeList(ctx context.Context, id string) (r []string, err error) {
+  var _args16 CompanyManagerGetEmployeeListArgs
+  _args16.ID = id
+  var _result17 CompanyManagerGetEmployeeListResult
+  if err = p.Client_().Call(ctx, "getEmployeeList", &_args16, &_result17); err != nil {
+    return
+  }
+  return _result17.GetSuccess(), nil
 }
 
 // Parameters:
 //  - ID
 func (p *CompanyManagerClient) RemoveCompany(ctx context.Context, id string) (err error) {
-  var _args14 CompanyManagerRemoveCompanyArgs
-  _args14.ID = id
-  var _result15 CompanyManagerRemoveCompanyResult
-  if err = p.Client_().Call(ctx, "removeCompany", &_args14, &_result15); err != nil {
+  var _args18 CompanyManagerRemoveCompanyArgs
+  _args18.ID = id
+  var _result19 CompanyManagerRemoveCompanyResult
+  if err = p.Client_().Call(ctx, "removeCompany", &_args18, &_result19); err != nil {
     return
   }
   return nil
@@ -608,16 +656,18 @@ func (p *CompanyManagerProcessor) ProcessorMap() map[string]thrift.TProcessorFun
 
 func NewCompanyManagerProcessor(handler CompanyManager) *CompanyManagerProcessor {
 
-  self16 := &CompanyManagerProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self16.processorMap["getEmployee"] = &companyManagerProcessorGetEmployee{handler:handler}
-  self16.processorMap["putEmployee"] = &companyManagerProcessorPutEmployee{handler:handler}
-  self16.processorMap["removeEmployee"] = &companyManagerProcessorRemoveEmployee{handler:handler}
-  self16.processorMap["getCompany"] = &companyManagerProcessorGetCompany{handler:handler}
-  self16.processorMap["putCompany"] = &companyManagerProcessorPutCompany{handler:handler}
-  self16.processorMap["getAllCompany"] = &companyManagerProcessorGetAllCompany{handler:handler}
-  self16.processorMap["getEmployeeList"] = &companyManagerProcessorGetEmployeeList{handler:handler}
-  self16.processorMap["removeCompany"] = &companyManagerProcessorRemoveCompany{handler:handler}
-return self16
+  self20 := &CompanyManagerProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
+  self20.processorMap["getEmployee"] = &companyManagerProcessorGetEmployee{handler:handler}
+  self20.processorMap["postEmployee"] = &companyManagerProcessorPostEmployee{handler:handler}
+  self20.processorMap["putEmployee"] = &companyManagerProcessorPutEmployee{handler:handler}
+  self20.processorMap["removeEmployee"] = &companyManagerProcessorRemoveEmployee{handler:handler}
+  self20.processorMap["getCompany"] = &companyManagerProcessorGetCompany{handler:handler}
+  self20.processorMap["getAllCompany"] = &companyManagerProcessorGetAllCompany{handler:handler}
+  self20.processorMap["postCompany"] = &companyManagerProcessorPostCompany{handler:handler}
+  self20.processorMap["putCompany"] = &companyManagerProcessorPutCompany{handler:handler}
+  self20.processorMap["getEmployeeList"] = &companyManagerProcessorGetEmployeeList{handler:handler}
+  self20.processorMap["removeCompany"] = &companyManagerProcessorRemoveCompany{handler:handler}
+return self20
 }
 
 func (p *CompanyManagerProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -628,12 +678,12 @@ func (p *CompanyManagerProcessor) Process(ctx context.Context, iprot, oprot thri
   }
   iprot.Skip(thrift.STRUCT)
   iprot.ReadMessageEnd()
-  x17 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
+  x21 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
   oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-  x17.Write(oprot)
+  x21.Write(oprot)
   oprot.WriteMessageEnd()
   oprot.Flush(ctx)
-  return false, x17
+  return false, x21
 
 }
 
@@ -668,6 +718,51 @@ var retval string
     result.Success = &retval
 }
   if err2 = oprot.WriteMessageBegin("getEmployee", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type companyManagerProcessorPostEmployee struct {
+  handler CompanyManager
+}
+
+func (p *companyManagerProcessorPostEmployee) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := CompanyManagerPostEmployeeArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("postEmployee", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := CompanyManagerPostEmployeeResult{}
+  var err2 error
+  if err2 = p.handler.PostEmployee(ctx, args.ID, args.Name, args.Address, args.Age, args.Company); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing postEmployee: " + err2.Error())
+    oprot.WriteMessageBegin("postEmployee", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return true, err2
+  }
+  if err2 = oprot.WriteMessageBegin("postEmployee", thrift.REPLY, seqId); err2 != nil {
     err = err2
   }
   if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -823,51 +918,6 @@ var retval string
   return true, err
 }
 
-type companyManagerProcessorPutCompany struct {
-  handler CompanyManager
-}
-
-func (p *companyManagerProcessorPutCompany) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  args := CompanyManagerPutCompanyArgs{}
-  if err = args.Read(iprot); err != nil {
-    iprot.ReadMessageEnd()
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-    oprot.WriteMessageBegin("putCompany", thrift.EXCEPTION, seqId)
-    x.Write(oprot)
-    oprot.WriteMessageEnd()
-    oprot.Flush(ctx)
-    return false, err
-  }
-
-  iprot.ReadMessageEnd()
-  result := CompanyManagerPutCompanyResult{}
-  var err2 error
-  if err2 = p.handler.PutCompany(ctx, args.ID, args.Name, args.Address); err2 != nil {
-    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing putCompany: " + err2.Error())
-    oprot.WriteMessageBegin("putCompany", thrift.EXCEPTION, seqId)
-    x.Write(oprot)
-    oprot.WriteMessageEnd()
-    oprot.Flush(ctx)
-    return true, err2
-  }
-  if err2 = oprot.WriteMessageBegin("putCompany", thrift.REPLY, seqId); err2 != nil {
-    err = err2
-  }
-  if err2 = result.Write(oprot); err == nil && err2 != nil {
-    err = err2
-  }
-  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
-    err = err2
-  }
-  if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
-    err = err2
-  }
-  if err != nil {
-    return
-  }
-  return true, err
-}
-
 type companyManagerProcessorGetAllCompany struct {
   handler CompanyManager
 }
@@ -899,6 +949,96 @@ var retval []string
     result.Success = retval
 }
   if err2 = oprot.WriteMessageBegin("getAllCompany", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type companyManagerProcessorPostCompany struct {
+  handler CompanyManager
+}
+
+func (p *companyManagerProcessorPostCompany) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := CompanyManagerPostCompanyArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("postCompany", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := CompanyManagerPostCompanyResult{}
+  var err2 error
+  if err2 = p.handler.PostCompany(ctx, args.ID, args.Name, args.Address); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing postCompany: " + err2.Error())
+    oprot.WriteMessageBegin("postCompany", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return true, err2
+  }
+  if err2 = oprot.WriteMessageBegin("postCompany", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type companyManagerProcessorPutCompany struct {
+  handler CompanyManager
+}
+
+func (p *companyManagerProcessorPutCompany) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := CompanyManagerPutCompanyArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("putCompany", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := CompanyManagerPutCompanyResult{}
+  var err2 error
+  if err2 = p.handler.PutCompany(ctx, args.ID, args.Name, args.Address); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing putCompany: " + err2.Error())
+    oprot.WriteMessageBegin("putCompany", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush(ctx)
+    return true, err2
+  }
+  if err2 = oprot.WriteMessageBegin("putCompany", thrift.REPLY, seqId); err2 != nil {
     err = err2
   }
   if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -1237,6 +1377,293 @@ func (p *CompanyManagerGetEmployeeResult) String() string {
     return "<nil>"
   }
   return fmt.Sprintf("CompanyManagerGetEmployeeResult(%+v)", *p)
+}
+
+// Attributes:
+//  - ID
+//  - Name
+//  - Address
+//  - Age
+//  - Company
+type CompanyManagerPostEmployeeArgs struct {
+  ID string `thrift:"id,1" db:"id" json:"id"`
+  Name string `thrift:"name,2" db:"name" json:"name"`
+  Address string `thrift:"address,3" db:"address" json:"address"`
+  Age Int `thrift:"age,4" db:"age" json:"age"`
+  Company string `thrift:"company,5" db:"company" json:"company"`
+}
+
+func NewCompanyManagerPostEmployeeArgs() *CompanyManagerPostEmployeeArgs {
+  return &CompanyManagerPostEmployeeArgs{}
+}
+
+
+func (p *CompanyManagerPostEmployeeArgs) GetID() string {
+  return p.ID
+}
+
+func (p *CompanyManagerPostEmployeeArgs) GetName() string {
+  return p.Name
+}
+
+func (p *CompanyManagerPostEmployeeArgs) GetAddress() string {
+  return p.Address
+}
+
+func (p *CompanyManagerPostEmployeeArgs) GetAge() Int {
+  return p.Age
+}
+
+func (p *CompanyManagerPostEmployeeArgs) GetCompany() string {
+  return p.Company
+}
+func (p *CompanyManagerPostEmployeeArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField1(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 2:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField2(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 3:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField3(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 4:
+      if fieldTypeId == thrift.I32 {
+        if err := p.ReadField4(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 5:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField5(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs)  ReadField1(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 1: ", err)
+} else {
+  p.ID = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs)  ReadField2(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 2: ", err)
+} else {
+  p.Name = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs)  ReadField3(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 3: ", err)
+} else {
+  p.Address = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs)  ReadField4(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadI32(); err != nil {
+  return thrift.PrependError("error reading field 4: ", err)
+} else {
+  temp := Int(v)
+  p.Age = temp
+}
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs)  ReadField5(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 5: ", err)
+} else {
+  p.Company = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("postEmployee_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+    if err := p.writeField2(oprot); err != nil { return err }
+    if err := p.writeField3(oprot); err != nil { return err }
+    if err := p.writeField4(oprot); err != nil { return err }
+    if err := p.writeField5(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:id: ", p), err) }
+  if err := oprot.WriteString(string(p.ID)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.id (1) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:id: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostEmployeeArgs) writeField2(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("name", thrift.STRING, 2); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:name: ", p), err) }
+  if err := oprot.WriteString(string(p.Name)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.name (2) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:name: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostEmployeeArgs) writeField3(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("address", thrift.STRING, 3); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:address: ", p), err) }
+  if err := oprot.WriteString(string(p.Address)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.address (3) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:address: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostEmployeeArgs) writeField4(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("age", thrift.I32, 4); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:age: ", p), err) }
+  if err := oprot.WriteI32(int32(p.Age)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.age (4) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:age: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostEmployeeArgs) writeField5(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("company", thrift.STRING, 5); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:company: ", p), err) }
+  if err := oprot.WriteString(string(p.Company)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.company (5) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 5:company: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostEmployeeArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerPostEmployeeArgs(%+v)", *p)
+}
+
+type CompanyManagerPostEmployeeResult struct {
+}
+
+func NewCompanyManagerPostEmployeeResult() *CompanyManagerPostEmployeeResult {
+  return &CompanyManagerPostEmployeeResult{}
+}
+
+func (p *CompanyManagerPostEmployeeResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    if err := iprot.Skip(fieldTypeId); err != nil {
+      return err
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("postEmployee_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerPostEmployeeResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerPostEmployeeResult(%+v)", *p)
 }
 
 // Attributes:
@@ -1895,6 +2322,390 @@ func (p *CompanyManagerGetCompanyResult) String() string {
   return fmt.Sprintf("CompanyManagerGetCompanyResult(%+v)", *p)
 }
 
+type CompanyManagerGetAllCompanyArgs struct {
+}
+
+func NewCompanyManagerGetAllCompanyArgs() *CompanyManagerGetAllCompanyArgs {
+  return &CompanyManagerGetAllCompanyArgs{}
+}
+
+func (p *CompanyManagerGetAllCompanyArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    if err := iprot.Skip(fieldTypeId); err != nil {
+      return err
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerGetAllCompanyArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("getAllCompany_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerGetAllCompanyArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerGetAllCompanyArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type CompanyManagerGetAllCompanyResult struct {
+  Success []string `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewCompanyManagerGetAllCompanyResult() *CompanyManagerGetAllCompanyResult {
+  return &CompanyManagerGetAllCompanyResult{}
+}
+
+var CompanyManagerGetAllCompanyResult_Success_DEFAULT []string
+
+func (p *CompanyManagerGetAllCompanyResult) GetSuccess() []string {
+  return p.Success
+}
+func (p *CompanyManagerGetAllCompanyResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *CompanyManagerGetAllCompanyResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if fieldTypeId == thrift.LIST {
+        if err := p.ReadField0(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerGetAllCompanyResult)  ReadField0(iprot thrift.TProtocol) error {
+  _, size, err := iprot.ReadListBegin()
+  if err != nil {
+    return thrift.PrependError("error reading list begin: ", err)
+  }
+  tSlice := make([]string, 0, size)
+  p.Success =  tSlice
+  for i := 0; i < size; i ++ {
+var _elem22 string
+    if v, err := iprot.ReadString(); err != nil {
+    return thrift.PrependError("error reading field 0: ", err)
+} else {
+    _elem22 = v
+}
+    p.Success = append(p.Success, _elem22)
+  }
+  if err := iprot.ReadListEnd(); err != nil {
+    return thrift.PrependError("error reading list end: ", err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerGetAllCompanyResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("getAllCompany_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerGetAllCompanyResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := oprot.WriteListBegin(thrift.STRING, len(p.Success)); err != nil {
+      return thrift.PrependError("error writing list begin: ", err)
+    }
+    for _, v := range p.Success {
+      if err := oprot.WriteString(string(v)); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+    }
+    if err := oprot.WriteListEnd(); err != nil {
+      return thrift.PrependError("error writing list end: ", err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *CompanyManagerGetAllCompanyResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerGetAllCompanyResult(%+v)", *p)
+}
+
+// Attributes:
+//  - ID
+//  - Name
+//  - Address
+type CompanyManagerPostCompanyArgs struct {
+  ID string `thrift:"id,1" db:"id" json:"id"`
+  Name string `thrift:"name,2" db:"name" json:"name"`
+  Address string `thrift:"address,3" db:"address" json:"address"`
+}
+
+func NewCompanyManagerPostCompanyArgs() *CompanyManagerPostCompanyArgs {
+  return &CompanyManagerPostCompanyArgs{}
+}
+
+
+func (p *CompanyManagerPostCompanyArgs) GetID() string {
+  return p.ID
+}
+
+func (p *CompanyManagerPostCompanyArgs) GetName() string {
+  return p.Name
+}
+
+func (p *CompanyManagerPostCompanyArgs) GetAddress() string {
+  return p.Address
+}
+func (p *CompanyManagerPostCompanyArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField1(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 2:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField2(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    case 3:
+      if fieldTypeId == thrift.STRING {
+        if err := p.ReadField3(iprot); err != nil {
+          return err
+        }
+      } else {
+        if err := iprot.Skip(fieldTypeId); err != nil {
+          return err
+        }
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyArgs)  ReadField1(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 1: ", err)
+} else {
+  p.ID = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyArgs)  ReadField2(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 2: ", err)
+} else {
+  p.Name = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyArgs)  ReadField3(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 3: ", err)
+} else {
+  p.Address = v
+}
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("postCompany_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+    if err := p.writeField2(oprot); err != nil { return err }
+    if err := p.writeField3(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:id: ", p), err) }
+  if err := oprot.WriteString(string(p.ID)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.id (1) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:id: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostCompanyArgs) writeField2(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("name", thrift.STRING, 2); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:name: ", p), err) }
+  if err := oprot.WriteString(string(p.Name)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.name (2) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:name: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostCompanyArgs) writeField3(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("address", thrift.STRING, 3); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:address: ", p), err) }
+  if err := oprot.WriteString(string(p.Address)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.address (3) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:address: ", p), err) }
+  return err
+}
+
+func (p *CompanyManagerPostCompanyArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerPostCompanyArgs(%+v)", *p)
+}
+
+type CompanyManagerPostCompanyResult struct {
+}
+
+func NewCompanyManagerPostCompanyResult() *CompanyManagerPostCompanyResult {
+  return &CompanyManagerPostCompanyResult{}
+}
+
+func (p *CompanyManagerPostCompanyResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    if err := iprot.Skip(fieldTypeId); err != nil {
+      return err
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("postCompany_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *CompanyManagerPostCompanyResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("CompanyManagerPostCompanyResult(%+v)", *p)
+}
+
 // Attributes:
 //  - ID
 //  - Name
@@ -2109,176 +2920,6 @@ func (p *CompanyManagerPutCompanyResult) String() string {
   return fmt.Sprintf("CompanyManagerPutCompanyResult(%+v)", *p)
 }
 
-type CompanyManagerGetAllCompanyArgs struct {
-}
-
-func NewCompanyManagerGetAllCompanyArgs() *CompanyManagerGetAllCompanyArgs {
-  return &CompanyManagerGetAllCompanyArgs{}
-}
-
-func (p *CompanyManagerGetAllCompanyArgs) Read(iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
-
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    if err := iprot.Skip(fieldTypeId); err != nil {
-      return err
-    }
-    if err := iprot.ReadFieldEnd(); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
-}
-
-func (p *CompanyManagerGetAllCompanyArgs) Write(oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin("getAllCompany_args"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-  }
-  if err := oprot.WriteFieldStop(); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
-}
-
-func (p *CompanyManagerGetAllCompanyArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CompanyManagerGetAllCompanyArgs(%+v)", *p)
-}
-
-// Attributes:
-//  - Success
-type CompanyManagerGetAllCompanyResult struct {
-  Success []string `thrift:"success,0" db:"success" json:"success,omitempty"`
-}
-
-func NewCompanyManagerGetAllCompanyResult() *CompanyManagerGetAllCompanyResult {
-  return &CompanyManagerGetAllCompanyResult{}
-}
-
-var CompanyManagerGetAllCompanyResult_Success_DEFAULT []string
-
-func (p *CompanyManagerGetAllCompanyResult) GetSuccess() []string {
-  return p.Success
-}
-func (p *CompanyManagerGetAllCompanyResult) IsSetSuccess() bool {
-  return p.Success != nil
-}
-
-func (p *CompanyManagerGetAllCompanyResult) Read(iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
-
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 0:
-      if fieldTypeId == thrift.LIST {
-        if err := p.ReadField0(iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
-}
-
-func (p *CompanyManagerGetAllCompanyResult)  ReadField0(iprot thrift.TProtocol) error {
-  _, size, err := iprot.ReadListBegin()
-  if err != nil {
-    return thrift.PrependError("error reading list begin: ", err)
-  }
-  tSlice := make([]string, 0, size)
-  p.Success =  tSlice
-  for i := 0; i < size; i ++ {
-var _elem18 string
-    if v, err := iprot.ReadString(); err != nil {
-    return thrift.PrependError("error reading field 0: ", err)
-} else {
-    _elem18 = v
-}
-    p.Success = append(p.Success, _elem18)
-  }
-  if err := iprot.ReadListEnd(); err != nil {
-    return thrift.PrependError("error reading list end: ", err)
-  }
-  return nil
-}
-
-func (p *CompanyManagerGetAllCompanyResult) Write(oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin("getAllCompany_result"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField0(oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
-}
-
-func (p *CompanyManagerGetAllCompanyResult) writeField0(oprot thrift.TProtocol) (err error) {
-  if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := oprot.WriteListBegin(thrift.STRING, len(p.Success)); err != nil {
-      return thrift.PrependError("error writing list begin: ", err)
-    }
-    for _, v := range p.Success {
-      if err := oprot.WriteString(string(v)); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
-    }
-    if err := oprot.WriteListEnd(); err != nil {
-      return thrift.PrependError("error writing list end: ", err)
-    }
-    if err := oprot.WriteFieldEnd(); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
-  }
-  return err
-}
-
-func (p *CompanyManagerGetAllCompanyResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CompanyManagerGetAllCompanyResult(%+v)", *p)
-}
-
 // Attributes:
 //  - ID
 type CompanyManagerGetEmployeeListArgs struct {
@@ -2435,13 +3076,13 @@ func (p *CompanyManagerGetEmployeeListResult)  ReadField0(iprot thrift.TProtocol
   tSlice := make([]string, 0, size)
   p.Success =  tSlice
   for i := 0; i < size; i ++ {
-var _elem19 string
+var _elem23 string
     if v, err := iprot.ReadString(); err != nil {
     return thrift.PrependError("error reading field 0: ", err)
 } else {
-    _elem19 = v
+    _elem23 = v
 }
-    p.Success = append(p.Success, _elem19)
+    p.Success = append(p.Success, _elem23)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)

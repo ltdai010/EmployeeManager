@@ -59,19 +59,22 @@ func (o *CompanyController) GetAll() {
 
 // @Title Update
 // @Description update the object
+// @Param	uid			query	string			true		"ID"
 // @Param	body		body 	company.Company	true		"The body"
 // @Success 200 {object} company.Company
 // @Failure 403 :companyID is empty
 // @router /update [put]
 func (o *CompanyController) Put() {
 	var ob company.Company
-	json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
-
-	err := models.Update(ob.ID, ob.Name, ob.Address)
-	if err != nil {
-		o.Data["json"] = err.Error()
-	} else {
-		o.Data["json"] = "update success!"
+	id := o.GetString("uid")
+	err := json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
+	if id != "" {
+		err = models.Update(id, ob.Name, ob.Address)
+		if err != nil {
+			o.Data["json"] = err.Error()
+		} else {
+			o.Data["json"] = "update success!"
+		}
 	}
 	o.ServeJSON()
 }

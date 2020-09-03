@@ -40,10 +40,7 @@ func AddOne(company company.Company) string {
 
 func GetOne(companyID string) (string, error) {
 	s, err := client.GetCompany(defaultContext, companyID)
-	if err != nil {
-		return err.Error(), err
-	}
-	return s, nil
+	return s, err
 }
 
 func GetAll() []string {
@@ -59,7 +56,6 @@ func Update(id string, name string, address string) error {
 }
 
 func Delete(ObjectId string) error{
-	log.Println(ObjectId)
 	err := client.RemoveCompany(defaultContext, ObjectId)
 	if err != nil {
 		return err

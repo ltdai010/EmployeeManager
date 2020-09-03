@@ -22,21 +22,38 @@ type HandleCompany struct {
 //get an employee
 func (this *HandleCompany) GetEmployee(ctx context.Context, id string, companyID string) (r string, err error) {
 	e, err := client.BsGetItem2(generic.TStringKey(companyID), []byte(id))
-	if err != nil {
-		return "", err
+	if e == nil {
+		return "failed", err
 	}
 	var s company.Employee
-	_ = json.Unmarshal(e.GetValue(), &s)
+	err = json.Unmarshal(e.GetValue(), &s)
 	i, _ := client.BsGetItem2(models.CompanyKey, []byte(s.GetCompany()))
 	var c company.Company
-	_ = json.Unmarshal(i.GetValue(), &c)
+	err = json.Unmarshal(i.GetValue(), &c)
 	s.Company = c.GetName()
+	if err != nil {
+		return "failed", nil
+	}
 	return s.String(), nil
+}
+
+//post an employee
+func (this *HandleCompany) PostEmployee(ctx context.Context, id string, name string, address string,
+	age company.Int, companyID string) (err error)  {
+	s, err := json.Marshal(company.Employee{ID: id, Name: name,
+		Address: address, Age: age, Company: companyID})
+	item := generic.TItem{Key: []byte(id), Value: s}
+	_, err = client.BsPutItem2(generic.TStringKey(companyID), &item)
+	return err
 }
 
 //put an employee
 func (this *HandleCompany) PutEmployee(ctx context.Context, id string, name string, address string,
 	age company.Int, companyID string) (err error)  {
+	i, err := client.BsGetItem2(generic.TStringKey(companyID), generic.TItemKey(id))
+	if i == nil {
+		return err
+	}
 	s, err := json.Marshal(company.Employee{ID: id, Name: name,
 		Address: address, Age: age, Company: companyID})
 	item := generic.TItem{Key: []byte(id), Value: s}
@@ -51,19 +68,34 @@ func (this *HandleCompany) RemoveEmployee(ctx context.Context, id string, compan
 }
 
 //get a company
-func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string, error) {
+func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (string string, err error) {
 	c, err := client.BsGetItem2(models.CompanyKey, []byte(id))
-	if err != nil {
-		return "", err
+	if c == nil {
+		return "failed", err
 	}
 	var s company.Company
-	_ = json.Unmarshal(c.GetValue(), &s)
+	err = json.Unmarshal(c.GetValue(), &s)
+	if err != nil {
+		return "failed", err
+	}
 	return s.String(), nil
+}
+
+//post a company
+func (this *HandleCompany) PostCompany(ctx context.Context, id string, name string, address string) (err error) {
+	c := company.Company{ID: id, Address: address, Name: name}
+	s, err := json.Marshal(c)
+	item := generic.TItem{Key: []byte(id), Value: s}
+	_, err = client.BsPutItem2(models.CompanyKey, &item)
+	return err
 }
 
 //put a company
 func (this *HandleCompany) PutCompany(ctx context.Context, id string, name string, address string) (err error) {
-	log.Println(id)
+	i, err := client.BsGetItem2(models.CompanyKey, generic.TItemKey(id))
+	if i == nil {
+		return err
+	}
 	c := company.Company{ID: id, Address: address, Name: name}
 	s, err := json.Marshal(c)
 	item := generic.TItem{Key: []byte(id), Value: s}

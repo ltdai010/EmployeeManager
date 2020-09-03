@@ -84,6 +84,11 @@ paths:
       description: update the object
       operationId: CompanyController.Update
       parameters:
+      - in: query
+        name: uid
+        description: ID
+        required: true
+        type: string
       - in: body
         name: body
         description: The body
@@ -189,26 +194,15 @@ paths:
         required: true
         type: string
       - in: query
-        name: name
-        description: name
+        name: cid
+        description: The cid
         required: true
         type: string
-      - in: query
-        name: address
-        description: address
-        required: true
-        type: string
-      - in: query
-        name: age
-        description: age
-        required: true
-        type: integer
-        format: int64
-      - in: query
-        name: companyID
-        description: companyID
-        required: true
-        type: string
+      - in: body
+        name: body
+        description: The company information
+        schema:
+          $ref: '#/definitions/company.Employee'
       responses:
         "200":
           description: ""
