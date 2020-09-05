@@ -23,11 +23,14 @@ func Usage() {
   fmt.Fprintln(os.Stderr, "Usage of ", os.Args[0], " [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]:")
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
-  fmt.Fprintln(os.Stderr, "  string getEmployee(string id, string companyID)")
-  fmt.Fprintln(os.Stderr, "  void postEmployee(string id, string name, string address, int age, string company)")
-  fmt.Fprintln(os.Stderr, "  void putEmployee(string id, string name, string address, int age, string company)")
+  fmt.Fprintln(os.Stderr, "  Employee getEmployee(string id, string companyID)")
+  fmt.Fprintln(os.Stderr, "  void postEmployee(string id, string name, string address, Date date, string company)")
+  fmt.Fprintln(os.Stderr, "  void putEmployee(string id, string name, string address, Date date, string company)")
   fmt.Fprintln(os.Stderr, "  void removeEmployee(string id, string companyID)")
-  fmt.Fprintln(os.Stderr, "  string getCompany(string id)")
+  fmt.Fprintln(os.Stderr, "  Company getCompany(string id)")
+  fmt.Fprintln(os.Stderr, "   getAllEmployee()")
+  fmt.Fprintln(os.Stderr, "   getListEmployee(string companyID, int start, int count)")
+  fmt.Fprintln(os.Stderr, "   getListEmployeeInDate(string companyID, Date pros, Date cons)")
   fmt.Fprintln(os.Stderr, "   getAllCompany()")
   fmt.Fprintln(os.Stderr, "  void postCompany(string id, string name, string address)")
   fmt.Fprintln(os.Stderr, "  void putCompany(string id, string name, string address)")
@@ -177,13 +180,23 @@ func main() {
     value1 := argvalue1
     argvalue2 := flag.Arg(3)
     value2 := argvalue2
-    tmp3, err29 := (strconv.Atoi(flag.Arg(4)))
-    if err29 != nil {
+    arg38 := flag.Arg(4)
+    mbTrans39 := thrift.NewTMemoryBufferLen(len(arg38))
+    defer mbTrans39.Close()
+    _, err40 := mbTrans39.WriteString(arg38)
+    if err40 != nil {
       Usage()
       return
     }
-    argvalue3 := int32(tmp3)
-    value3 := company.Int(argvalue3)
+    factory41 := thrift.NewTJSONProtocolFactory()
+    jsProt42 := factory41.GetProtocol(mbTrans39)
+    argvalue3 := company.NewDate()
+    err43 := argvalue3.Read(jsProt42)
+    if err43 != nil {
+      Usage()
+      return
+    }
+    value3 := argvalue3
     argvalue4 := flag.Arg(5)
     value4 := argvalue4
     fmt.Print(client.PostEmployee(context.Background(), value0, value1, value2, value3, value4))
@@ -200,13 +213,23 @@ func main() {
     value1 := argvalue1
     argvalue2 := flag.Arg(3)
     value2 := argvalue2
-    tmp3, err34 := (strconv.Atoi(flag.Arg(4)))
-    if err34 != nil {
+    arg48 := flag.Arg(4)
+    mbTrans49 := thrift.NewTMemoryBufferLen(len(arg48))
+    defer mbTrans49.Close()
+    _, err50 := mbTrans49.WriteString(arg48)
+    if err50 != nil {
       Usage()
       return
     }
-    argvalue3 := int32(tmp3)
-    value3 := company.Int(argvalue3)
+    factory51 := thrift.NewTJSONProtocolFactory()
+    jsProt52 := factory51.GetProtocol(mbTrans49)
+    argvalue3 := company.NewDate()
+    err53 := argvalue3.Read(jsProt52)
+    if err53 != nil {
+      Usage()
+      return
+    }
+    value3 := argvalue3
     argvalue4 := flag.Arg(5)
     value4 := argvalue4
     fmt.Print(client.PutEmployee(context.Background(), value0, value1, value2, value3, value4))
@@ -232,6 +255,82 @@ func main() {
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
     fmt.Print(client.GetCompany(context.Background(), value0))
+    fmt.Print("\n")
+    break
+  case "getAllEmployee":
+    if flag.NArg() - 1 != 0 {
+      fmt.Fprintln(os.Stderr, "GetAllEmployee requires 0 args")
+      flag.Usage()
+    }
+    fmt.Print(client.GetAllEmployee(context.Background()))
+    fmt.Print("\n")
+    break
+  case "getListEmployee":
+    if flag.NArg() - 1 != 3 {
+      fmt.Fprintln(os.Stderr, "GetListEmployee requires 3 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    tmp1, err59 := (strconv.Atoi(flag.Arg(2)))
+    if err59 != nil {
+      Usage()
+      return
+    }
+    argvalue1 := int32(tmp1)
+    value1 := company.Int(argvalue1)
+    tmp2, err60 := (strconv.Atoi(flag.Arg(3)))
+    if err60 != nil {
+      Usage()
+      return
+    }
+    argvalue2 := int32(tmp2)
+    value2 := company.Int(argvalue2)
+    fmt.Print(client.GetListEmployee(context.Background(), value0, value1, value2))
+    fmt.Print("\n")
+    break
+  case "getListEmployeeInDate":
+    if flag.NArg() - 1 != 3 {
+      fmt.Fprintln(os.Stderr, "GetListEmployeeInDate requires 3 args")
+      flag.Usage()
+    }
+    argvalue0 := flag.Arg(1)
+    value0 := argvalue0
+    arg62 := flag.Arg(2)
+    mbTrans63 := thrift.NewTMemoryBufferLen(len(arg62))
+    defer mbTrans63.Close()
+    _, err64 := mbTrans63.WriteString(arg62)
+    if err64 != nil {
+      Usage()
+      return
+    }
+    factory65 := thrift.NewTJSONProtocolFactory()
+    jsProt66 := factory65.GetProtocol(mbTrans63)
+    argvalue1 := company.NewDate()
+    err67 := argvalue1.Read(jsProt66)
+    if err67 != nil {
+      Usage()
+      return
+    }
+    value1 := argvalue1
+    arg68 := flag.Arg(3)
+    mbTrans69 := thrift.NewTMemoryBufferLen(len(arg68))
+    defer mbTrans69.Close()
+    _, err70 := mbTrans69.WriteString(arg68)
+    if err70 != nil {
+      Usage()
+      return
+    }
+    factory71 := thrift.NewTJSONProtocolFactory()
+    jsProt72 := factory71.GetProtocol(mbTrans69)
+    argvalue2 := company.NewDate()
+    err73 := argvalue2.Read(jsProt72)
+    if err73 != nil {
+      Usage()
+      return
+    }
+    value2 := argvalue2
+    fmt.Print(client.GetListEmployeeInDate(context.Background(), value0, value1, value2))
     fmt.Print("\n")
     break
   case "getAllCompany":

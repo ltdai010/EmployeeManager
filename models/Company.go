@@ -4,6 +4,7 @@ import (
 	"company-manager/gen-go/company"
 	"context"
 	"github.com/apache/thrift/lib/go/thrift"
+	"github.com/astaxie/beego"
 	"log"
 )
 
@@ -13,7 +14,7 @@ var (
 )
 
 func init() {
-	transport, err := thrift.NewTSocket("127.0.0.1:8888")
+	transport, err := thrift.NewTSocket(beego.AppConfig.String("hostPort"))
 	if err != nil {
 		log.Println(err.Error())
 		return
@@ -31,19 +32,20 @@ func init() {
 const CompanyKey = "Company"
 
 func AddOne(company company.Company) string {
-	err := client.PutCompany(defaultContext, company.ID ,company.Name, company.Address)
+	log.Println("ok")
+	err := client.PostCompany(defaultContext, company.GetID(), company.GetName(), company.GetAddress())
 	if err != nil {
 		return err.Error()
 	}
 	return company.ID
 }
 
-func GetOne(companyID string) (string, error) {
+func GetOne(companyID string) (*company.Company, error) {
 	s, err := client.GetCompany(defaultContext, companyID)
 	return s, err
 }
 
-func GetAll() []string {
+func GetAll() []*company.Company {
 	list, err := client.GetAllCompany(defaultContext)
 	if err != nil {
 		return nil
@@ -52,7 +54,8 @@ func GetAll() []string {
 }
 
 func Update(id string, name string, address string) error {
-	return  client.PutCompany(defaultContext, id, name, address)
+	err := client.PutCompany(defaultContext, id, name, address)
+	return err
 }
 
 func Delete(ObjectId string) error{

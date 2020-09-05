@@ -137,7 +137,7 @@
                         "description": "The body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/company.Company"
+                            "$ref": "#/definitions/templateType.updateCompanyForm"
                         }
                     }
                 ],
@@ -155,30 +155,6 @@
             }
         },
         "/employee/": {
-            "get": {
-                "tags": [
-                    "employee"
-                ],
-                "description": "get all Users",
-                "operationId": "EmployeeController.GetAll",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "companyID",
-                        "description": "company id",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/company.Employee"
-                        }
-                    }
-                }
-            },
             "post": {
                 "tags": [
                     "employee"
@@ -202,6 +178,137 @@
                     },
                     "403": {
                         "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/employee/GetAll": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "description": "get all Users",
+                "operationId": "EmployeeController.GetAll",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/company.Employee"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/GetAllInCompany": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "description": "get all Users",
+                "operationId": "EmployeeController.GetAllInCompany",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "company id",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/company.Employee"
+                        }
+                    }
+                }
+            }
+        },
+        "/employee/getSlice": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "description": "get user by uid",
+                "operationId": "EmployeeController.GetSlice",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "The company ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "start",
+                        "description": "Start point",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "Number of elements",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/company.Employee"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is empty"
+                    }
+                }
+            }
+        },
+        "/employee/getSliceByTime": {
+            "get": {
+                "tags": [
+                    "employee"
+                ],
+                "description": "get user by uid",
+                "operationId": "EmployeeController.GetSliceByTime",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "companyID",
+                        "description": "The company ID",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "first",
+                        "description": "From this day(dd-mm-yyyy)",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "last",
+                        "description": "To this day (dd-mm-yyyy)",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/company.Employee"
+                        }
+                    },
+                    "403": {
+                        "description": ":uid is empty"
                     }
                 }
             }
@@ -233,7 +340,7 @@
                         "name": "body",
                         "description": "The company information",
                         "schema": {
-                            "$ref": "#/definitions/company.Employee"
+                            "$ref": "#/definitions/templateType.updateEmployeeForm"
                         }
                     }
                 ],
@@ -334,6 +441,21 @@
                 }
             }
         },
+        "company.Date": {
+            "title": "Date",
+            "type": "object",
+            "properties": {
+                "day": {
+                    "$ref": "#/definitions/company.Int"
+                },
+                "month": {
+                    "$ref": "#/definitions/company.Int"
+                },
+                "year": {
+                    "$ref": "#/definitions/company.Int"
+                }
+            }
+        },
         "company.Employee": {
             "title": "Employee",
             "type": "object",
@@ -341,11 +463,11 @@
                 "address": {
                     "type": "string"
                 },
-                "age": {
-                    "$ref": "#/definitions/company.Int"
-                },
-                "company": {
+                "companyID": {
                     "type": "string"
+                },
+                "date": {
+                    "$ref": "#/definitions/company.Date"
                 },
                 "id": {
                     "type": "string"
@@ -359,6 +481,33 @@
             "title": "Int",
             "format": "int32",
             "type": "integer"
+        },
+        "templateType.updateCompanyForm": {
+            "title": "updateCompanyForm",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "templateType.updateEmployeeForm": {
+            "title": "updateEmployeeForm",
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "dateOfBirth": {
+                    "$ref": "#/definitions/company.Date"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
         }
     },
     "tags": [

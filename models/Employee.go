@@ -10,20 +10,20 @@ func init() {
 
 
 
-func AddUser(u company.Employee) string {
-	err := client.PutEmployee(defaultContext, u.ID, u.Name, u.Address, u.Age, u.Company)
+func AddEmployee(u company.Employee) string {
+	err := client.PostEmployee(defaultContext, u.GetID(), u.GetName(), u.GetAddress(), u.GetDate(), u.GetCompanyID())
 	if err != nil {
 		return err.Error()
 	}
-	return u.ID
+	return u.GetID()
 }
 
-func GetUser(uid string, companyID string) (u string, err error) {
+func GetEmployee(uid string, companyID string) (u *company.Employee, err error) {
 	s, err := client.GetEmployee(defaultContext, uid, companyID)
 	return s, err
 }
 
-func GetAllUsers(id string) (list []string) {
+func GetAllCompanyEmployee(id string) (list []*company.Employee) {
 	list, err := client.GetEmployeeList(defaultContext, id)
 	if err != nil {
 		return nil
@@ -31,11 +31,28 @@ func GetAllUsers(id string) (list []string) {
 	return list
 }
 
-func UpdateUser(uid string, name string, address string, age int, companyID string)  (err error) {
-	err = client.PutEmployee(defaultContext, uid, name, address, company.Int(age), companyID)
+func GetEmployeeSlice(companyID string, start int, count int) (list []*company.Employee, err error) {
+	list, err = client.GetListEmployee(defaultContext, companyID, company.Int(start), company.Int(count))
+	return list, err
+}
+
+func GetEmployeeSliceInTime(companyID string, first *company.Date,
+	last *company.Date) (list []*company.Employee, err error) {
+	list, err = client.GetListEmployeeInDate(defaultContext, companyID, first, last)
+	return list, err
+}
+
+func GetAllEmployee() (list []*company.Employee, err error) {
+	list, err = client.GetAllEmployee(defaultContext);
+	return list, err
+}
+
+func UpdateEmployee(uid string, name string, address string, date *company.Date, companyID string)  (err error) {
+	err = client.PutEmployee(defaultContext, uid, name, address, date, companyID)
 	return err
 }
 
-func DeleteUser(uid string, companyID string) {
-	client.RemoveEmployee(defaultContext, uid, companyID)
+func DeleteEmployee(uid string, companyID string) error {
+	err := client.RemoveEmployee(defaultContext, uid, companyID)
+	return err
 }

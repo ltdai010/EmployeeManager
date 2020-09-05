@@ -63,9 +63,9 @@ func init() {
 
     beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
         beego.ControllerComments{
-            Method: "GetAll",
-            Router: `/`,
-            AllowHTTPMethods: []string{"get"},
+            Method: "Delete",
+            Router: `/:uid`,
+            AllowHTTPMethods: []string{"delete"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -81,9 +81,36 @@ func init() {
 
     beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
         beego.ControllerComments{
-            Method: "Delete",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"delete"},
+            Method: "GetAll",
+            Router: `/GetAll`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
+        beego.ControllerComments{
+            Method: "GetAllInCompany",
+            Router: `/GetAllInCompany`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
+        beego.ControllerComments{
+            Method: "GetSlice",
+            Router: `/getSlice`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
+        beego.ControllerComments{
+            Method: "GetSliceByTime",
+            Router: `/getSliceByTime`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
