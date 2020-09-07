@@ -21,6 +21,20 @@
   <component name="ChangeListManager">
     <list default="true" id="3f56dc40-af49-4f48-a9f9-4c2e4f85b40f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-manager" beforeDir="false" afterPath="$PROJECT_DIR$/company-manager" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/companyManager.thrift" beforeDir="false" afterPath="$PROJECT_DIR$/companyManager.thrift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/Company.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/Company.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/Employee.go" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/Employee.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen-go/company/companyManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/gen-go/company/companyManager.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen-go/company/company_manager-remote/company_manager-remote.go" beforeDir="false" afterPath="$PROJECT_DIR$/gen-go/company/company_manager-remote/company_manager-remote.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gen-go/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/gen-go/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lastupdate.tmp" beforeDir="false" afterPath="$PROJECT_DIR$/lastupdate.tmp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/Company.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/Company.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/Employee.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/Employee.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/routers/commentsRouter_controllers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger.json" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/swagger/swagger.yml" beforeDir="false" afterPath="$PROJECT_DIR$/swagger/swagger.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templateType/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/templateType/template.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +94,10 @@
       <screen x="0" y="29" width="1920" height="1051" />
     </state>
     <state x="783" y="402" width="657" height="403" key="#com.intellij.fileTypes.FileTypeChooser/0.29.1920.1051@0.29.1920.1051" timestamp="1598947470325" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1599456853512">
+      <screen x="0" y="29" width="1920" height="1051" />
+    </state>
+    <state width="498" height="446" key="SwitcherDM/0.29.1920.1051@0.29.1920.1051" timestamp="1599456853512" />
     <state x="780" y="344" width="672" height="678" key="search.everywhere.popup" timestamp="1599190143856">
       <screen x="0" y="29" width="1920" height="1051" />
     </state>

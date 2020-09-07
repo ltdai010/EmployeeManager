@@ -72,15 +72,6 @@ func init() {
 
     beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
         beego.ControllerComments{
-            Method: "Get",
-            Router: `/:uid`,
-            AllowHTTPMethods: []string{"get"},
-            MethodParams: param.Make(),
-            Filters: nil,
-            Params: nil})
-
-    beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
-        beego.ControllerComments{
             Method: "GetAll",
             Router: `/GetAll`,
             AllowHTTPMethods: []string{"get"},
@@ -99,8 +90,8 @@ func init() {
 
     beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"] = append(beego.GlobalControllerRouter["company-manager/controllers:EmployeeController"],
         beego.ControllerComments{
-            Method: "GetSlice",
-            Router: `/getSlice`,
+            Method: "Get",
+            Router: `/GetEmployee`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,

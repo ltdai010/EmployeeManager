@@ -4,13 +4,13 @@ import (
 	"company-manager/gen-go/company"
 )
 
-type updateEmployeeForm struct {
-	name string
-	dateOfBirth company.Date
-	address string
+type UpdateEmployeeForm struct {
+	Name        string
+	DateOfBirth *company.Date
+	Address     string
 }
 
-type updateCompanyForm struct {
-	name string
-	address string
+type UpdateCompanyForm struct {
+	Name string
+	Address string
 }

@@ -3,8 +3,8 @@ package controllers
 import (
 	"company-manager/gen-go/company"
 	"company-manager/models"
+	"company-manager/templateType"
 	"encoding/json"
-
 	"github.com/astaxie/beego"
 )
 
@@ -27,7 +27,7 @@ func (o *CompanyController) Post() {
 	o.ServeJSON()
 }
 
-// @Title Get
+// @Title GetCompany
 // @Description find object by companyID
 // @Param	companyID		query 	string	true		"the companyID you want to get"
 // @Success 200 {object} company.Company
@@ -35,6 +35,7 @@ func (o *CompanyController) Post() {
 // @router /getCompany [get]
 func (o *CompanyController) Get() {
 	companyID := o.GetString("companyID")
+	//log.Println(companyID)
 	if companyID != "" {
 		ob, err := models.GetOne(companyID)
 		if err != nil {
@@ -60,18 +61,18 @@ func (o *CompanyController) GetAll() {
 // @Title Update
 // @Description update the object
 // @Param	uid			query	string			true		"ID"
-// @Param	body		body 	templateType.updateCompanyForm	true		"The body"
+// @Param	body		body 	templateType.UpdateCompanyForm	true		"The body"
 // @Success 200 {object} company.Company
 // @Failure 403 :companyID is empty
 // @router /update [put]
 func (o *CompanyController) Put() {
-	var ob company.Company
+	var ob templateType.UpdateCompanyForm
 	id := o.GetString("uid")
 	err := json.Unmarshal(o.Ctx.Input.RequestBody, &ob)
 	if id != "" {
 		err = models.Update(id, ob.Name, ob.Address)
 		if err != nil {
-			o.Data["json"] = err
+			o.Data["json"] = err.Error()
 		} else {
 			o.Data["json"] = "update success!"
 		}
@@ -89,7 +90,7 @@ func (o *CompanyController) Delete() {
 	objectId := o.GetString("companyIO")
 	err := models.Delete(objectId)
 	if err != nil {
-		o.Data["json"] = err
+		o.Data["json"] = err.Error()
 	} else {
 		o.Data["json"] = "delete success!"
 	}

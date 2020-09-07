@@ -22,15 +22,16 @@ struct Date{
     3: int year
 }
 
+
+
 service companyManager{
     Employee getEmployee(1:string id, 2:string companyID)
-    void postEmployee(1:string id, 2:string name, 3:string address, 4: Date date, 5: string company)
-    void putEmployee(1:string id, 2:string name, 3:string address, 4: Date date 5: string company),
+    void postEmployee(1:string id, 2:string name, 3:string address, 4:Date date, 5:string company)
+    void putEmployee(1:string id, 2:string name, 3:string address, 4:Date date, 5:string company)
     void removeEmployee(1:string id, 2:string companyID)
     Company getCompany(1:string id)
     list<Employee> getAllEmployee()
-    list<Employee> getListEmployee(1:string companyID, 2:int start, 3:int count)
-    list<Employee> getListEmployeeInDate(1:string companyID, 2:Date pros, 3:Date cons)
+    list<Employee> getListEmployeeInDate(1:string companyID, 2:Date first, 3:Date last)
     list<Company> getAllCompany()
     void postCompany(1:string id, 2:string name, 3:string address)
     void putCompany(1:string id, 2:string name, 3:string address)

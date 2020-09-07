@@ -3,6 +3,7 @@ package controllers
 import (
 	"company-manager/gen-go/company"
 	"company-manager/models"
+	"company-manager/templateType"
 	"encoding/json"
 	"errors"
 	"strconv"
@@ -53,22 +54,22 @@ func (u *EmployeeController) GetAllInCompany() {
 func (u *EmployeeController) GetAll() {
 	users, err := models.GetAllEmployee()
 	if err != nil {
-		u.Data["json"] = err
+		u.Data["json"] = err.Error()
 	} else {
 		u.Data["json"] = users
 	}
 	u.ServeJSON()
 }
 
-// @Title Get
+// @Title GetEmployee
 // @Description get user by uid
-// @Param	uid		path 	string	true		"The key for staticblock"
+// @Param	uid		query 	string	true		"The key for staticblock"
 // @Param   companyID query string true         "The company ID"
 // @Success 200 {object} company.Employee
 // @Failure 403 :uid is empty
-// @router /:uid [get]
+// @router /GetEmployee [get]
 func (u *EmployeeController) Get() {
-	uid := u.GetString(":uid")
+	uid := u.GetString("uid")
 	companyID := u.GetString("companyID")
 	if uid != "" {
 		user, err := models.GetEmployee(uid, companyID)
@@ -81,31 +82,6 @@ func (u *EmployeeController) Get() {
 	u.ServeJSON()
 }
 
-// @Title GetSlice
-// @Description get user by uid
-// @Param   companyID query string true         "The company ID"
-// @Param   start query int true         "Start point"
-// @Param   count query int true         "Number of elements"
-// @Success 200 {object} company.Employee
-// @Failure 403 :uid is empty
-// @router /getSlice [get]
-func (u *EmployeeController) GetSlice() {
-	companyID := u.GetString("companyID")
-	start, err := u.GetInt("start")
-	if err != nil {
-		u.Data["json"] = "error"
-	}
-	count, err := u.GetInt("count")
-	if err == nil {
-		list, err := models.GetEmployeeSlice(companyID, start, count)
-		if err != nil {
-			u.Data["json"] = err.Error()
-		} else {
-			u.Data["json"] = list
-		}
-	}
-	u.ServeJSON()
-}
 
 // @Title GetSliceByTime
 // @Description get user by uid
@@ -165,19 +141,19 @@ func stringToDate(date string) (*company.Date, error) {
 // @Description update the user
 // @Param	uid		query 	string	true		"The uid you want to update"
 // @Param	cid		query	string	true		"The cid"
-// @Param	body	body	templateType.updateEmployeeForm		"The company information"
+// @Param	body	body	templateType.UpdateEmployeeForm		"The company information"
 // @Success 200 {object} company.Employee
 // @Failure 403 :something is empty
 // @router /update [put]
 func (u *EmployeeController) Put() {
-	var e company.Employee
+	var e templateType.UpdateEmployeeForm
 	uid := u.GetString("uid")
 	cid := u.GetString("cid")
 	err := json.Unmarshal(u.Ctx.Input.RequestBody, &e)
 	if uid != "" {
-		err = models.UpdateEmployee(uid, e.GetName(), e.GetAddress(), e.GetDate(), cid)
+		err = models.UpdateEmployee(uid, e.Name, e.Address, e.DateOfBirth, cid)
 		if err != nil {
-			u.Data["json"] = err
+			u.Data["json"] = err.Error()
 		} else {
 			u.Data["json"] = "done"
 		}

@@ -42,7 +42,11 @@ func AddOne(company company.Company) string {
 
 func GetOne(companyID string) (*company.Company, error) {
 	s, err := client.GetCompany(defaultContext, companyID)
-	return s, err
+	log.Println(companyID)
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
 func GetAll() []*company.Company {

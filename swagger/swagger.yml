@@ -63,7 +63,7 @@ paths:
       tags:
       - company
       description: find object by companyID
-      operationId: CompanyController.Get
+      operationId: CompanyController.GetCompany
       parameters:
       - in: query
         name: companyID
@@ -94,7 +94,7 @@ paths:
         description: The body
         required: true
         schema:
-          $ref: '#/definitions/templateType.updateCompanyForm'
+          $ref: '#/definitions/templateType.UpdateCompanyForm'
       responses:
         "200":
           description: ""
@@ -121,29 +121,6 @@ paths:
         "403":
           description: body is empty
   /employee/{uid}:
-    get:
-      tags:
-      - employee
-      description: get user by uid
-      operationId: EmployeeController.Get
-      parameters:
-      - in: path
-        name: uid
-        description: The key for staticblock
-        required: true
-        type: string
-      - in: query
-        name: companyID
-        description: The company ID
-        required: true
-        type: string
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/company.Employee'
-        "403":
-          description: :uid is empty
     delete:
       tags:
       - employee
@@ -193,30 +170,23 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/company.Employee'
-  /employee/getSlice:
+  /employee/GetEmployee:
     get:
       tags:
       - employee
       description: get user by uid
-      operationId: EmployeeController.GetSlice
+      operationId: EmployeeController.GetEmployee
       parameters:
+      - in: query
+        name: uid
+        description: The key for staticblock
+        required: true
+        type: string
       - in: query
         name: companyID
         description: The company ID
         required: true
         type: string
-      - in: query
-        name: start
-        description: Start point
-        required: true
-        type: integer
-        format: int64
-      - in: query
-        name: count
-        description: Number of elements
-        required: true
-        type: integer
-        format: int64
       responses:
         "200":
           description: ""
@@ -274,7 +244,7 @@ paths:
         name: body
         description: The company information
         schema:
-          $ref: '#/definitions/templateType.updateEmployeeForm'
+          $ref: '#/definitions/templateType.UpdateEmployeeForm'
       responses:
         "200":
           description: ""
@@ -321,23 +291,23 @@ definitions:
     title: Int
     format: int32
     type: integer
-  templateType.updateCompanyForm:
-    title: updateCompanyForm
+  templateType.UpdateCompanyForm:
+    title: UpdateCompanyForm
     type: object
     properties:
-      address:
+      Address:
         type: string
-      name:
+      Name:
         type: string
-  templateType.updateEmployeeForm:
-    title: updateEmployeeForm
+  templateType.UpdateEmployeeForm:
+    title: UpdateEmployeeForm
     type: object
     properties:
-      address:
+      Address:
         type: string
-      dateOfBirth:
+      DateOfBirth:
         $ref: '#/definitions/company.Date'
-      name:
+      Name:
         type: string
 tags:
 - name: company

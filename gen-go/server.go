@@ -9,9 +9,10 @@ import (
 	"github.com/OpenStars/EtcdBackendService/StringBigsetService"
 	"github.com/OpenStars/EtcdBackendService/StringBigsetService/bigset/thrift/gen-go/openstars/core/bigset/generic"
 	"github.com/OpenStars/GoEndpointManager/GoEndpointBackendManager"
-	"log"
-
 	"github.com/apache/thrift/lib/go/thrift"
+	"log"
+	"strconv"
+	"strings"
 )
 
 var client StringBigsetService.Client
@@ -21,14 +22,10 @@ type HandleCompany struct {
 }
 
 //get an employee
-func (this *HandleCompany) GetEmployee(ctx context.Context, id string, companyID string) (e *company.Employee, err error) {
-	item, err := client.BsGetItem2(generic.TStringKey(companyID), []byte(id))
-	if item == nil {
-		return nil, err
-	}
-	err = json.Unmarshal(item.GetValue(), e)
+func (this *HandleCompany) GetEmployee(ctx context.Context, id string, companyID string) (*company.Employee, error) {
+	_, e, err := checkExist(companyID, id)
 	if err != nil {
-		return	nil, err
+		return nil, err
 	}
 	return e, nil
 }
@@ -39,48 +36,73 @@ func (this *HandleCompany) PostEmployee(ctx context.Context, id string, name str
 	if !validateDate(date) {
 		return errors.New("the birthday is invalid")
 	}
+	mm := strconv.Itoa(int(date.GetMonth()))
+	yyyy := strconv.Itoa(int(date.GetYear()))
+	key := mm + "/" + yyyy + "-" + companyID
+	_, i, err := checkExist(companyID, id)
+	if i != nil {
+		return errors.New("all ready exist")
+	}
+	c, err := client.BsGetItem2(models.CompanyKey, generic.TItemKey(companyID))
+	if c == nil {
+		return errors.New("company not exist")
+	}
 	s, err := json.Marshal(company.Employee{ID: id, Name: name,
 		Address: address, Date: date, CompanyID: companyID})
 	item := generic.TItem{Key: []byte(id), Value: s}
-	_, err = client.BsPutItem2(generic.TStringKey(companyID), &item)
+	_, err = client.BsPutItem2(generic.TStringKey(key), &item)
 	return err
 }
 
 //put an employee
 func (this *HandleCompany) PutEmployee(ctx context.Context, id string, name string, address string,
 	date *company.Date, companyID string) (err error)  {
-	i, err := client.BsGetItem2(generic.TStringKey(companyID), generic.TItemKey(id))
-	if i == nil || err != nil{
-		return errors.New("employee not exist")
+	k, e, err := checkExist(companyID, id)
+	if e == nil {
+		return errors.New("not exist")
 	}
+	_, err = client.BsRemoveItem2(k, generic.TItemKey(id))
+	key := string(date.GetMonth()) + "/" + string(date.GetYear()) + "-" + companyID
 	s, err := json.Marshal(company.Employee{ID: id, Name: name,
 		Address: address, Date: date, CompanyID: companyID})
 	item := generic.TItem{Key: []byte(id), Value: s}
-	_, err = client.BsPutItem2(generic.TStringKey(companyID), &item)
-	return err
+	_, err = client.BsPutItem2(generic.TStringKey(key), &item)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 //remove employee
 func (this *HandleCompany) RemoveEmployee(ctx context.Context, id string, companyID string) (err error) {
-	_, err = client.BsRemoveItem2(generic.TStringKey(companyID), generic.TItemKey(id))
+	k, e, err := checkExist(companyID, id)
+	if e == nil {
+		return errors.New("not exist")
+	}
+	_, err = client.BsRemoveItem2(k, generic.TItemKey(id))
 	return err
 }
 
 //get a company
-func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (com *company.Company, err  error) {
-	c, err := client.BsGetItem2(models.CompanyKey, []byte(id))
+func (this *HandleCompany) GetCompany(ctx context.Context, id string)  (*company.Company, error) {
+	c, err := client.BsGetItem2(models.CompanyKey, generic.TItemKey(id))
 	if c == nil {
-		return nil, err
+		return nil, errors.New("not found")
 	}
-	err = json.Unmarshal(c.GetValue(), c)
+	var com company.Company
+	err = json.Unmarshal(c.GetValue(), &com)
 	if err != nil {
 		return nil, err
 	}
-	return com, nil
+	return &com, err
 }
 
 //post a company
 func (this *HandleCompany) PostCompany(ctx context.Context, id string, name string, address string) (err error) {
+	i, err := client.BsGetItem2(models.CompanyKey, generic.TItemKey(id))
+	if i != nil {
+		return errors.New("already exist")
+	}
 	c := company.Company{ID: id, Address: address, Name: name}
 	s, err := json.Marshal(c)
 	item := generic.TItem{Key: []byte(id), Value: s}
@@ -109,13 +131,36 @@ func (this *HandleCompany) RemoveCompany(ctx context.Context, id string) (err er
 
 
 //get a company employeelist
-func (this *HandleCompany) GetEmployeeList(ctx context.Context, id string) (list []*company.Employee, err error) {
-	count, err := client.GetTotalCount2(generic.TStringKey(id))
-	arr, err := client.BsGetSlice2(generic.TStringKey(id), 0, int32(count))
-	for _, i := range arr {
-		var e company.Employee
-		err = json.Unmarshal(i.GetValue(), &e)
-		list = append(list, &e)
+func (this *HandleCompany) GetEmployeeList(ctx context.Context, companyID string) ([]*company.Employee, error) {
+	var list []*company.Employee
+	length, err := client.TotalStringKeyCount2()
+	listk, err := client.GetListKey2(0, int32(length))
+	for _, i := range listk{
+		set := strings.Split(i, "-")
+		if len(set) != 2 {
+			continue
+		}
+		if set[1] == companyID {
+			length, err = client.GetTotalCount2(generic.TStringKey(i))
+			if err != nil {
+				return nil, err
+			}
+			listi, err := client.BsGetSlice2(generic.TStringKey(i), 0, int32(length))
+			if err != nil {
+				return nil, err
+			}
+			for _, item := range listi{
+				var em company.Employee
+				err := json.Unmarshal(item.GetValue(), &em)
+				if err != nil {
+					return nil, err
+				}
+				list = append(list, &em)
+			}
+		}
+	}
+	if list == nil {
+		return nil, errors.New("company not found")
 	}
 	if err != nil {
 		return nil, err
@@ -135,20 +180,6 @@ func (this *HandleCompany) GetAllCompany(ctx context.Context) (list []*company.C
 	return list, err
 }
 
-//get list employee by range
-func (this *HandleCompany) GetListEmployee(ctx context.Context, companyID string, start company.Int,
-	count company.Int) (list []*company.Employee, err error) {
-	listItem, err := client.BsGetSlice2(generic.TStringKey(companyID), int32(start), int32(count))
-	for _, i := range listItem {
-		var e company.Employee
-		err = json.Unmarshal(i.GetValue(), &e)
-		list = append(list, &e)
-	}
-	if err != nil {
-		return nil, err
-	}
-	return list, nil
-}
 
 //get all employee
 func (this *HandleCompany) GetAllEmployee(ctx context.Context) (list []*company.Employee ,err error) {
@@ -157,47 +188,135 @@ func (this *HandleCompany) GetAllEmployee(ctx context.Context) (list []*company.
 	for _, i := range listcom{
 		var c company.Company
 		err = json.Unmarshal(i.GetValue(), &c)
-		length, err = client.GetTotalCount2(generic.TStringKey(c.GetID()))
+		length, err = client.TotalStringKeyCount2()
 		if err != nil {
 			return nil, err
 		}
-		listemp, err := client.BsGetSlice2(generic.TStringKey(c.GetID()), 0, int32(length))
+		listk, err := client.GetListKey2(0, int32(length))
 		if err != nil {
 			return nil, err
 		}
-		for _, j := range listemp {
-			var e company.Employee
-			err = json.Unmarshal(j.GetValue(), &e)
-			list = append(list, &e)
+		for _, j := range listk {
+			set := strings.Split(j, "-")
+			if len(set) != 2 {
+				continue
+			}
+			if set[1] == c.GetID() {
+				length, err = client.GetTotalCount2(generic.TStringKey(j))
+				if err != nil {
+					return nil, err
+				}
+				listi, err := client.BsGetSlice2(generic.TStringKey(j), 0, int32(length))
+				if err != nil {
+					return nil, err
+				}
+				for _, item := range listi {
+					var em company.Employee
+					err := json.Unmarshal(item.GetValue(), &em)
+					if err != nil {
+						continue
+					}
+					list = append(list, &em)
+				}
+			}
 		}
 	}
 	if err != nil {
 		return nil, err
 	}
-	return list, err
+	return list, nil
 }
 
 //get list employee by date range
 func (this *HandleCompany) GetListEmployeeInDate(ctx context.Context, companyID string, first *company.Date,
-	last *company.Date) (r []*company.Employee, err error) {
+	last *company.Date) ([]*company.Employee, error) {
 	if !validateDate(first) || !validateDate(last) {
-		return nil, err
+		return nil, errors.New("date is invalid")
 	}
-	length, err := client.GetTotalCount2(generic.TStringKey(companyID))
-	list, err := client.BsGetSlice2(generic.TStringKey(companyID), 0, int32(length))
-	var unSortedList []*company.Employee
-	for _, i := range list{
-		var e company.Employee
-		err = json.Unmarshal(i.GetValue(), &e)
-		if compareDate(e.GetDate(), first) > 0 && compareDate(e.GetDate(), last) < 0 {
-			unSortedList = append(unSortedList, &e)
+	var list []*company.Employee
+	length, err := client.TotalStringKeyCount2()
+	listk, err := client.GetListKey2(0, int32(length))
+	for _, i := range listk {
+		set := strings.Split(i, "-")
+		if len(set) != 2 {
+			continue
 		}
+		if set[1] == companyID {
+			setD := strings.Split(set[0], "/")
+			log.Println(setD)
+			if len(setD) != 2 {
+				continue
+			}
+			log.Println(setD)
+			mm, err := strconv.Atoi(setD[0])
+			if err != nil {
+				continue
+			}
+			yyyy, err := strconv.Atoi(setD[1])
+			if err != nil {
+				continue
+			}
+			date := company.Date{Day: 1, Month: company.Int(mm), Year: company.Int(yyyy)}
+			if compareDate(&date, first) < 0 || compareDate(&date, last) > 0 {
+				continue
+			}
+			length, err := client.GetTotalCount2(generic.TStringKey(i))
+			if err != nil {
+				continue
+			}
+			listi, err := client.BsGetSlice2(generic.TStringKey(i), 0, int32(length))
+			if err != nil {
+				continue
+			}
+			for _, item := range listi {
+				var em company.Employee
+				err := json.Unmarshal(item.GetValue(), &em)
+				if err != nil {
+					continue
+				}
+				if compareDate(em.GetDate(), first) >= 0 && compareDate(em.GetDate(), last) <= 0 {
+					list = append(list, &em)
+				}
+			}
+		}
+ 	}
+	if list == nil {
+		return nil, errors.New("no employee in this range")
 	}
 	if err != nil {
 		return nil, err
 	}
-	r = mergeSort(unSortedList)
-	return r, nil
+	return mergeSort(list), nil
+}
+
+func checkExist(companyID string, employeeID string) (generic.TStringKey ,*company.Employee, error)  {
+	length, err := client.TotalStringKeyCount2()
+	if err != nil {
+		return "", nil, err
+	}
+	listk, err := client.GetListKey2(0, int32(length))
+	for _, i := range listk {
+		set := strings.Split(i, "-")
+		if len(set) != 2 {
+			continue
+		}
+		if set[1] == companyID {
+			item, err := client.BsGetItem2(generic.TStringKey(i), generic.TItemKey(employeeID))
+			if err != nil {
+				continue
+			}
+			if item == nil {
+				continue
+			}
+			var e company.Employee
+			err = json.Unmarshal(item.GetValue(), &e)
+			if err != nil {
+				continue
+			}
+			return generic.TStringKey(i), &e, nil
+		}
+	}
+	return "", nil, errors.New("not found")
 }
 
 func validateDate(date *company.Date) bool {

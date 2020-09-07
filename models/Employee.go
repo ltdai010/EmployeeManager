@@ -18,7 +18,7 @@ func AddEmployee(u company.Employee) string {
 	return u.GetID()
 }
 
-func GetEmployee(uid string, companyID string) (u *company.Employee, err error) {
+func GetEmployee(uid string, companyID string) (*company.Employee, error) {
 	s, err := client.GetEmployee(defaultContext, uid, companyID)
 	return s, err
 }
@@ -31,19 +31,21 @@ func GetAllCompanyEmployee(id string) (list []*company.Employee) {
 	return list
 }
 
-func GetEmployeeSlice(companyID string, start int, count int) (list []*company.Employee, err error) {
-	list, err = client.GetListEmployee(defaultContext, companyID, company.Int(start), company.Int(count))
-	return list, err
-}
 
 func GetEmployeeSliceInTime(companyID string, first *company.Date,
 	last *company.Date) (list []*company.Employee, err error) {
 	list, err = client.GetListEmployeeInDate(defaultContext, companyID, first, last)
+	if err != nil {
+		return nil, err
+	}
 	return list, err
 }
 
 func GetAllEmployee() (list []*company.Employee, err error) {
 	list, err = client.GetAllEmployee(defaultContext);
+	if err != nil {
+		return nil, err
+	}
 	return list, err
 }
 
