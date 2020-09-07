@@ -243,7 +243,6 @@ func (this *HandleCompany) GetListEmployeeInDate(ctx context.Context, companyID 
 		}
 		if set[1] == companyID {
 			setD := strings.Split(set[0], "/")
-			log.Println(setD)
 			if len(setD) != 2 {
 				continue
 			}
